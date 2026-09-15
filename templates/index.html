@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>IP Analyzer</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+</head>
+
+<body>
+
+    <div class="container">
+
+        <header>
+            <h1>🛡️ IP Analyzer</h1>
+            <p>Analysez rapidement la réputation d'une adresse IP.</p>
+        </header>
+
+        <!-- Formulaire d'analyse -->
+        <section class="card">
+            <h2>🔍 Analyser une adresse IP</h2>
+
+            <form method="POST">
+
+                <label for="ip">Adresse IP</label>
+
+                <div class="search-box">
+                    <input
+                        type="text"
+                        id="ip"
+                        name="ip"
+                        placeholder="Exemple : 8.8.8.8"
+                        required
+                    >
+
+                    <button type="submit">
+                        Analyser
+                    </button>
+                </div>
+
+            </form>
+        </section>
+
+        <!-- Message d'erreur -->
+        {% if erreur %}
+        <section class="alert">
+            {{ erreur }}
+        </section>
+        {% endif %}
+
+
+        <!-- Résultat -->
+        {% if resultat %}
+        <section class="card result-card">
+
+            <h2>📊 Rapport d'analyse</h2>
+
+            <div class="result-grid">
+
+                <div class="result-item">
+                    <span>IP analysée</span>
+                    <strong>{{ resultat.ip_address }}</strong>
+                </div>
+
+                <div class="result-item">
+                    <span>Pays</span>
+                    <strong>{{ resultat.country or "Inconnu" }}</strong>
+                </div>
+
+                <div class="result-item">
+                    <span>Organisation</span>
+                    <strong>
+                        {{ resultat.organization or "Inconnue" }}
+                    </strong>
+                </div>
+
+                <div class="result-item">
+                    <span>Type</span>
+                    <strong>
+                        {{ resultat.ip_type or "Inconnu" }}
+                    </strong>
+                </div>
+
+                <div class="result-item">
+                    <span>Risk Score</span>
+                    <strong>
+                        {{ resultat.risk_score }}/100
+                    </strong>
+                </div>
+
+                <div class="result-item">
+                    <span>Statut</span>
+
+                    <strong class="status
+                        {% if resultat.risk_status == 'CRITIQUE' %}
+                            critical
+                        {% elif resultat.risk_status == 'RISQUÉ' %}
+                            risky
+                        {% elif resultat.risk_status == 'MOYEN' %}
+                            medium
+                        {% else %}
+                            low
+                        {% endif %}
+                    ">
+                        {{ resultat.risk_status }}
+                    </strong>
+                </div>
+
+                <div class="result-item">
+                    <span>Signalements</span>
+                    <strong>
+                        {{ resultat.total_reports or 0 }}
+                    </strong>
+                </div>
+
+                <div class="result-item">
+                    <span>Date de l'analyse</span>
+                    <strong>
+                        {{ resultat.analysis_date }}
+                    </strong>
+                </div>
+
+            </div>
+
+        </section>
+        {% endif %}
+
+
+        <!-- Historique -->
+        <section class="card">
+
+            <h2>🕘 Historique des recherches</h2>
+
+            {% if historique %}
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>IP</th>
+                            <th>Pays</th>
+                            <th>Organisation</th>
+                            <th>Type</th>
+                            <th>Risk Score</th>
+                            <th>Statut</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {% for recherche in historique %}
+
+                        <tr>
+
+                            <td>{{ recherche.ip_address }}</td>
+
+                            <td>
+                                {{ recherche.country or "Inconnu" }}
+                            </td>
+
+                            <td>
+                                {{ recherche.organization or "Inconnue" }}
+                            </td>
+
+                            <td>
+                                {{ recherche.ip_type or "Inconnu" }}
+                            </td>
+
+                            <td>
+                                {{ recherche.risk_score }}/100
+                            </td>
+
+                            <td>
+                                <span class="status
+                                    {% if recherche.risk_status == 'CRITIQUE' %}
+                                        critical
+                                    {% elif recherche.risk_status == 'RISQUÉ' %}
+                                        risky
+                                    {% elif recherche.risk_status == 'MOYEN' %}
+                                        medium
+                                    {% else %}
+                                        low
+                                    {% endif %}
+                                ">
+                                    {{ recherche.risk_status }}
+                                </span>
+                            </td>
+
+                            <td>
+                                {{ recherche.analysis_date }}
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            {% else %}
+
+            <p class="empty">
+                Aucune recherche enregistrée pour le moment.
+            </p>
+
+            {% endif %}
+
+        </section>
+
+        <footer>
+            <p>IP Analyzer — Projet de cybersécurité</p>
+        </footer>
+
+    </div>
+
+</body>
+</html>
