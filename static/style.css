@@ -1,4 +1,4 @@
-* {
+﻿* {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
@@ -6,7 +6,8 @@
 
 body {
     font-family: Arial, sans-serif;
-    background: #0b1220;
+    background:
+        radial-gradient(circle at top, #172554 0%, #0b1220 45%, #070b14 100%);
     color: #e5e7eb;
     min-height: 100vh;
 }
@@ -24,8 +25,9 @@ header {
 }
 
 header h1 {
-    font-size: 42px;
+    font-size: 46px;
     margin-bottom: 10px;
+    letter-spacing: -1px;
 }
 
 header p {
@@ -34,22 +36,17 @@ header p {
 }
 
 .card {
-    background: #111827;
-    border: 1px solid #1f2937;
-    border-radius: 15px;
-    padding: 25px;
+    background: rgba(17, 24, 39, 0.94);
+    border: 1px solid #263449;
+    border-radius: 18px;
+    padding: 28px;
     margin-bottom: 25px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(8px);
 }
 
 .card h2 {
     margin-bottom: 20px;
-}
-
-label {
-    display: block;
-    margin-bottom: 8px;
-    color: #cbd5e1;
 }
 
 .search-box {
@@ -57,34 +54,46 @@ label {
     gap: 12px;
 }
 
+label {
+    display: block;
+    margin-bottom: 8px;
+    color: #cbd5e1;
+    font-weight: 600;
+}
+
 input {
     flex: 1;
-    padding: 14px;
+    padding: 15px;
     border: 1px solid #374151;
-    border-radius: 8px;
+    border-radius: 10px;
     background: #0f172a;
     color: white;
     font-size: 16px;
+    transition: 0.2s ease;
 }
 
 input:focus {
     outline: none;
     border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
 }
 
 button {
-    padding: 14px 24px;
+    padding: 15px 26px;
     border: none;
-    border-radius: 8px;
-    background: #2563eb;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
     color: white;
     font-size: 16px;
     font-weight: bold;
     cursor: pointer;
+    transition: 0.2s ease;
+    box-shadow: 0 6px 18px rgba(37, 99, 235, 0.25);
 }
 
 button:hover {
-    background: #1d4ed8;
+    transform: translateY(-1px);
+    box-shadow: 0 8px 22px rgba(37, 99, 235, 0.4);
 }
 
 .alert {
@@ -99,14 +108,21 @@ button:hover {
 .result-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 15px;
+    gap: 16px;
 }
 
 .result-item {
-    background: #0f172a;
-    border-radius: 10px;
-    padding: 18px;
+    background: linear-gradient(145deg, #0f172a, #111c30);
+    border-radius: 12px;
+    padding: 19px;
     border: 1px solid #1e293b;
+    transition: 0.2s ease;
+}
+
+.result-item:hover {
+    transform: translateY(-2px);
+    border-color: #334155;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
 
 .result-item span {
@@ -117,35 +133,81 @@ button:hover {
 }
 
 .result-item strong {
-    font-size: 17px;
+    font-size: 18px;
+    color: #f8fafc;
 }
 
+/* Score de risque */
+.result-item:has(strong) {
+    position: relative;
+}
+
+/* Statuts */
 .status {
     display: inline-block;
-    padding: 6px 12px;
-    border-radius: 20px;
+    padding: 7px 14px;
+    border-radius: 999px;
     font-size: 13px !important;
     font-weight: bold;
+    letter-spacing: 0.3px;
 }
 
 .low {
-    background: #064e3b;
+    background: rgba(6, 78, 59, 0.8);
     color: #6ee7b7;
+    border: 1px solid #059669;
+    box-shadow: 0 0 12px rgba(16, 185, 129, 0.15);
 }
 
 .medium {
-    background: #713f12;
+    background: rgba(113, 63, 18, 0.8);
     color: #fde68a;
+    border: 1px solid #d97706;
+    box-shadow: 0 0 12px rgba(245, 158, 11, 0.15);
 }
 
 .risky {
-    background: #7c2d12;
+    background: rgba(124, 45, 18, 0.8);
     color: #fdba74;
+    border: 1px solid #ea580c;
 }
 
 .critical {
-    background: #7f1d1d;
+    background: rgba(127, 29, 29, 0.85);
     color: #fecaca;
+    border: 1px solid #ef4444;
+    box-shadow: 0 0 14px rgba(239, 68, 68, 0.2);
+}
+
+/* Analyse IA */
+.ai-card {
+    border: 1px solid #334155;
+    background: linear-gradient(
+        145deg,
+        rgba(17, 24, 39, 0.98),
+        rgba(15, 23, 42, 0.98)
+    );
+}
+
+.ai-card h2 {
+    color: #93c5fd;
+}
+
+.ai-analysis {
+    background: #0b1220;
+    border: 1px solid #1e293b;
+    border-radius: 12px;
+    padding: 22px;
+    line-height: 1.7;
+    color: #dbeafe;
+}
+
+.ai-analysis h3 {
+    color: #60a5fa;
+    border-left: 4px solid #3b82f6;
+    padding-left: 10px;
+    margin-top: 22px;
+    margin-bottom: 10px;
 }
 
 .table-container {
@@ -210,5 +272,9 @@ footer {
 
     button {
         width: 100%;
+    }
+
+    .card {
+        padding: 20px;
     }
 }

@@ -10,6 +10,32 @@
         rel="stylesheet"
         href="{{ url_for('static', filename='style.css') }}"
     >
+
+<style>
+.ai-analysis h3 {
+    margin-top: 24px;
+    margin-bottom: 10px;
+    color: #2563eb;
+    font-size: 1.08rem;
+    font-weight: 700;
+    border-left: 4px solid #2563eb;
+    padding-left: 10px;
+}
+
+.ai-analysis h3:first-child {
+    margin-top: 0;
+}
+
+.ai-analysis p:first-child {
+    font-weight: 600;
+    color: #374151;
+}
+
+.ai-analysis {
+    line-height: 1.7;
+}
+</style>
+
 </head>
 
 <body>
@@ -99,7 +125,7 @@
                     <strong class="status
                         {% if resultat.risk_status == 'CRITIQUE' %}
                             critical
-                        {% elif resultat.risk_status == 'RISQUÉ' %}
+                        {% elif resultat.risk_status == 'RISQUÃ‰' %}
                             risky
                         {% elif resultat.risk_status == 'MOYEN' %}
                             medium
@@ -130,6 +156,97 @@
         </section>
         {% endif %}
 
+
+        <!-- Analyse intelligente par IA -->
+{% if resultat %}
+<section class="card ai-card">
+
+    <h2>&#129302; Analyse intelligente par IA</h2>
+
+    <div class="ai-analysis" id="ai-analysis">
+        {{ resultat.ai_analysis }}
+    </div>
+
+</section>
+
+<script>
+    const ipAnalysee = "{{ resultat.ip_address }}";
+
+    function formaterAnalyseIA(texte) {
+        const div = document.createElement("div");
+        div.textContent = texte;
+        let contenu = div.innerHTML;
+
+        // Nettoyage des artefacts Markdown échappés
+        contenu = contenu.replace(/\\([#*`_])/g, "$1");
+        contenu = contenu.replace(/\*\*/g, "");
+        contenu = contenu.replace(/^###\s*/gm, "");
+        contenu = contenu.replace(/^##\s*/gm, "");
+        contenu = contenu.replace(/^#\s*/gm, "");
+        contenu = contenu.replace(/^---$/gm, "");
+        contenu = contenu.replace(/^\s*\*\s+/gm, "");
+
+        // Transformer les titres numérotés en titres HTML
+        contenu = contenu.replace(
+            /^(\d+\.\s+.+)$/gm,
+            "<h3>$1</h3>"
+        );
+
+        // Transformer les listes
+        contenu = contenu.replace(
+            /^\s*[-•]\s+(.+)$/gm,
+            "<li>$1</li>"
+        );
+
+        // Paragraphes
+        contenu = contenu.replace(/\n{2,}/g, "</p><p>");
+        contenu = contenu.replace(/\n/g, "<br>");
+
+        return "<p>" + contenu + "</p>";
+    }
+
+    function verifierAnalyseIA() {
+        fetch("/api/ai/" + encodeURIComponent(ipAnalysee))
+            .then(response => response.json())
+            .then(data => {
+
+                const zoneIA = document.getElementById("ai-analysis");
+
+                if (!zoneIA) {
+                    return;
+                }
+
+                if (data.status === "completed") {
+                    zoneIA.innerHTML = formaterAnalyseIA(data.analysis);
+                    return;
+                }
+
+                if (data.status === "error") {
+                    zoneIA.textContent = data.analysis;
+                    return;
+                }
+
+                // Gemini travaille encore
+                zoneIA.textContent = "Analyse IA en cours...";
+
+                setTimeout(verifierAnalyseIA, 2000);
+            })
+            .catch(error => {
+                console.error("Erreur récupération analyse IA :", error);
+
+                const zoneIA = document.getElementById("ai-analysis");
+
+                if (zoneIA) {
+                    zoneIA.textContent =
+                        "L'analyse IA est temporairement indisponible. " +
+                        "Les résultats techniques restent disponibles.";
+                }
+            });
+    }
+
+    verifierAnalyseIA();
+</script>
+{% endif %}
 
         <!-- Historique -->
         <section class="card">
@@ -182,7 +299,7 @@
                                 <span class="status
                                     {% if recherche.risk_status == 'CRITIQUE' %}
                                         critical
-                                    {% elif recherche.risk_status == 'RISQUÉ' %}
+                                    {% elif recherche.risk_status == 'RISQUÃ‰' %}
                                         risky
                                     {% elif recherche.risk_status == 'MOYEN' %}
                                         medium
